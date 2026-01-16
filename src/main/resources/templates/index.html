@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PolatCatering UK</title>
@@ -20,12 +21,13 @@
             </a>
 
             <div class="d-flex gap-2">
-                <div th:if="${#request.userPrincipal == null}">
+                <div sec:authorize="isAnonymous()">
                     <a th:href="@{/login}" class="btn btn-outline-light btn-sm fw-bold">
                         <i class="bi bi-person-fill me-1"></i> Admin Login
                     </a>
                 </div>
-                <div th:if="${#request.userPrincipal != null}">
+
+                <div sec:authorize="isAuthenticated()">
                     <a th:href="@{/logout}" class="btn btn-danger btn-sm fw-bold">
                         <i class="bi bi-box-arrow-right me-1"></i> Logout
                     </a>
@@ -50,7 +52,6 @@
 
             <div class="category-grid">
                 <a th:href="@{/}" class="category" th:classappend="${param.category == null} ? 'active'">All</a>
-
                 <a th:href="@{/category/Oven}" class="category">Oven</a>
                 <a th:href="@{/category/Fryer}" class="category">Fryer</a>
                 <a th:href="@{/category/Cooker}" class="category">Cooker</a>
@@ -58,7 +59,6 @@
                 <a th:href="@{/category/Griddle}" class="category">Griddle</a>
                 <a th:href="@{/category/Peeler}" class="category">Peeler</a>
                 <a th:href="@{/category/Chipper}" class="category">Chipper</a>
-
                 <a th:href="@{/category/Dough Roller}" class="category">Dough Roller</a>
                 <a th:href="@{/category/Dough Mixer}" class="category">Dough Mixer</a>
                 <a th:href="@{/category/Fridge}" class="category">Fridge</a>
@@ -76,7 +76,6 @@
                 <div th:each="equipment : ${listEquipments}" style="position: relative;">
 
                     <a th:href="@{/details/{id}(id=${equipment.id})}" class="item-card shadow-sm h-100 d-block text-decoration-none text-dark bg-white">
-
                         <div class="img-wrapper">
                             <img th:if="${equipment.imagePath != null}" th:src="${equipment.imagePath}" alt="Product Image">
                             <img th:if="${equipment.imagePath == null}" th:src="@{https://via.placeholder.com/300?text=No+Image}" alt="No Image">
@@ -89,7 +88,7 @@
                         <div class="price-tag shadow" th:text="'£' + ${equipment.price}">£0.00</div>
                     </a>
 
-                    <div th:if="${#request.userPrincipal != null}"
+                    <div sec:authorize="isAuthenticated()"
                          style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 20;">
 
                         <a th:href="@{/edit/{id}(id=${equipment.id})}"
@@ -142,9 +141,11 @@
         </div>
     </footer>
 
-    <a th:href="@{/showNewEquipmentForm}" class="fab shadow-lg">
-        <i class="bi bi-plus-lg"></i>
-    </a>
+    <div sec:authorize="isAuthenticated()">
+        <a th:href="@{/showNewEquipmentForm}" class="fab shadow-lg">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    </div>
 
 </div>
 
