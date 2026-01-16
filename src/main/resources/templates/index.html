@@ -12,7 +12,7 @@
 
 <header class="header">
     <div class="logo">Polat Catering</div>
-    <a href="/showNewEquipmentForm" class="add-btn">+ Yeni Ürün Ekle</a>
+    <a href="/showNewEquipmentForm" class="add-btn">+ Ürün Ekle</a>
 </header>
 
 <div class="category-scroll">
@@ -24,6 +24,10 @@
 </div>
 
 <div class="container">
+    <div th:if="${listEquipments.empty}" style="text-align:center; padding:20px;">
+        <p>Henüz ürün eklenmemiş.</p>
+    </div>
+
     <div class="product-grid">
         <div th:each="equipment : ${listEquipments}" class="card">
             <div class="card-img-container">

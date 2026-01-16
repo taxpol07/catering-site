@@ -17,32 +17,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Form işlemleri için basitlik sağlar
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // BU SAYFALAR HERKESE AÇIK (Login gerekmez)
-                        .requestMatchers("/", "/details/**", "/category/**", "/image/**", "/display/**", "/css/**", "/js/**", "/uploads/**").permitAll()
+                        // 1. BU DOSYALAR HERKESE AÇIK OLSUN (Login Yok)
+                        // css, js, images klasörleri ve ana sayfa
+                        .requestMatchers(
+                                "/",
+                                "/index",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/webjars/**",
+                                "/details/**",
+                                "/category/**"
+                        ).permitAll()
 
-                        // GERİ KALAN HER ŞEY (Ekleme, Silme) ŞİFRE İSTER
+                        // 2. GERİ KALAN HER ŞEY (Ekleme, Silme) ŞİFRE İSTER
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/", true) // Giriş yapınca ana sayfaya at
+                        .defaultSuccessUrl("/", true) // Giriş başarılıysa Ana Sayfaya at
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/") // Çıkış yapınca ana sayfaya dön
+                        .logoutSuccessUrl("/") // Çıkış yapınca Ana Sayfaya dön
                         .permitAll()
                 );
 
         return http.build();
     }
 
-    // 🔑 KULLANICI ADI VE ŞİFRE BURADA BELİRLENİYOR
+    // YÖNETİCİ ŞİFRESİ
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("polat")   // Kullanıcı adın
-                .password("1234")    // Şifren
+                .username("polat")
+                .password("1234")
                 .roles("ADMIN")
                 .build();
 
