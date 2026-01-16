@@ -26,9 +26,10 @@
     <div class="bg-white rounded shadow-sm overflow-hidden">
 
         <div class="row g-0">
-            <div class="col-md-6 bg-light p-4 d-flex align-items-center justify-content-center border-bottom border-md-end">
-                <img th:if="${equipment.imagePath != null}" th:src="${equipment.imagePath}" class="img-fluid" style="max-height: 400px;" alt="Product">
-                <img th:if="${equipment.imagePath == null}" th:src="@{https://via.placeholder.com/400?text=No+Image}" class="img-fluid" alt="No Image">
+            <div class="main-image mb-3">
+                <img th:src="${equipment.imagePath != null} ? @{'/uploads/' + ${equipment.imagePath}} : '/images/default-product.png'"
+                     class="img-fluid rounded shadow w-100"
+                     alt="Product Detail Image">
             </div>
 
             <div class="col-md-6 p-4">
