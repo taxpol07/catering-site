@@ -17,11 +17,13 @@ public class MvcConfig implements WebMvcConfigurer {
 
     private void exposeDirectory(String dirName, ResourceHandlerRegistry registry) {
         Path uploadDir = Paths.get(dirName);
+        // Bu yöntem Windows/Mac/Linux fark etmeksizin doğru yolu bulur
         String uploadPath = uploadDir.toFile().getAbsolutePath();
 
         if (dirName.startsWith("../")) dirName = dirName.replace("../", "");
 
         registry.addResourceHandler("/" + dirName + "/**")
-                .addResourceLocations("file:/" + uploadPath + "/");
+                .addResourceLocations("file:///" + uploadPath + "/"); // Windows için fazladan / gerekebilir, en garantisi URI kullanmaktır:
+        // .addResourceLocations(uploadDir.toUri().toString()); <-- Alternatif en garanti yöntem
     }
 }
