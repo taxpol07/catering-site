@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -45,31 +50,52 @@ public class EquipmentController {
         return "new_equipment";
     }
 
-    // *** DÜZELTİLEN KISIM: ÜRÜN KAYDETME ***
+    // *** DÜZELTİLEN VE TAMAMLANAN KISIM: ÜRÜN + RESİM KAYDETME ***
     @PostMapping("/saveEquipment")
     public String saveEquipment(@ModelAttribute("equipment") Equipment equipment,
                                 @RequestParam("imageFiles") List<MultipartFile> imageFiles) throws IOException {
 
-        // Çoklu resim yönetimi için hazırlık:
-        // HTML formundaki name="imageFiles" ile buradaki @RequestParam("imageFiles") eşleşmeli.
+        // Eğer listede dosya varsa işlemi başlat
+        if (imageFiles != null) {
+            for (MultipartFile file : imageFiles) {
+                // Dosya boş değilse (kullanıcı bir şey seçtiyse)
+                if (!file.isEmpty()) {
 
-        for (MultipartFile file : imageFiles) {
-            if (!file.isEmpty()) {
-                // TODO: Buraya Cloudinary yükleme kodunuz gelecek.
-                // Örnek mantık:
-                // String imageUrl = cloudinaryService.upload(file);
+                    // 1. Dosya ismini benzersiz yap (Örn: 1735654_resim.jpg)
+                    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-                // Eğer ana resim boşsa ilk resmi ana resim yap:
-                // if (equipment.getImagePath() == null) {
-                //     equipment.setImagePath(imageUrl);
-                // } else {
-                //     equipment.getAdditionalImages().add(imageUrl);
-                // }
+                    // 2. Kayıt yapılacak klasörü belirle: Proje ana dizinindeki "uploads"
+                    Path uploadPath = Paths.get("uploads");
+
+                    // Klasör yoksa oluştur
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+
+                    // 3. Dosyayı kaydet
+                    try (InputStream inputStream = file.getInputStream()) {
+                        Path filePath = uploadPath.resolve(fileName);
+                        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                        // 4. Veritabanı objesine dosya adını ekle
+                        if (equipment.getImagePath() == null) {
+                            // İlk resim her zaman "Kapak Resmi" olsun
+                            equipment.setImagePath(fileName);
+                        } else {
+                            // Diğer resimler "Ek Resimler" listesine
+                            equipment.getAdditionalImages().add(fileName);
+                        }
+                    } catch (IOException ioe) {
+                        throw new IOException("Resim kaydedilemedi: " + fileName, ioe);
+                    }
+                }
             }
         }
 
-        // Şimdilik sadece veritabanına kaydediyoruz (Resim yükleme servisini eklediğinizde yukarıyı açarsınız)
+        // Veritabanına kaydet
         repository.save(equipment);
+
+        // Ana sayfaya yönlendir
         return "redirect:/";
     }
 
