@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.demo.model.Equipment;
 import com.example.demo.repository.EquipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class EquipmentController {
 
     @Autowired
     private EquipmentRepository repository;
+
+    @Autowired
+    private Cloudinary cloudinary; // Cloudinary servisini çağırıyoruz
 
     // ANA SAYFA
     @GetMapping("/")
@@ -50,43 +52,37 @@ public class EquipmentController {
         return "new_equipment";
     }
 
-    // *** DÜZELTİLEN VE TAMAMLANAN KISIM: ÜRÜN + RESİM KAYDETME ***
+    // *** CLOUDINARY ENTEGRASYONLU KAYIT İŞLEMİ ***
     @PostMapping("/saveEquipment")
     public String saveEquipment(@ModelAttribute("equipment") Equipment equipment,
                                 @RequestParam("imageFiles") List<MultipartFile> imageFiles) throws IOException {
 
-        // Eğer listede dosya varsa işlemi başlat
+        // Null kontrolü ve liste başlatma
+        if (equipment.getAdditionalImages() == null) {
+            equipment.setAdditionalImages(new ArrayList<>());
+        }
+
         if (imageFiles != null) {
             for (MultipartFile file : imageFiles) {
-                // Dosya boş değilse (kullanıcı bir şey seçtiyse)
                 if (!file.isEmpty()) {
+                    try {
+                        // 1. Resmi Cloudinary'ye yükle (Otomatik format algılama ile)
+                        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto"));
 
-                    // 1. Dosya ismini benzersiz yap (Örn: 1735654_resim.jpg)
-                    String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                        // 2. Yüklenen resmin kalıcı internet adresini (URL) al
+                        String imageUrl = (String) uploadResult.get("url");
 
-                    // 2. Kayıt yapılacak klasörü belirle: Proje ana dizinindeki "uploads"
-                    Path uploadPath = Paths.get("uploads");
-
-                    // Klasör yoksa oluştur
-                    if (!Files.exists(uploadPath)) {
-                        Files.createDirectories(uploadPath);
-                    }
-
-                    // 3. Dosyayı kaydet
-                    try (InputStream inputStream = file.getInputStream()) {
-                        Path filePath = uploadPath.resolve(fileName);
-                        Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                        // 4. Veritabanı objesine dosya adını ekle
-                        if (equipment.getImagePath() == null) {
+                        // 3. Veritabanı objesine bu URL'yi ata
+                        if (equipment.getImagePath() == null || equipment.getImagePath().isEmpty()) {
                             // İlk resim her zaman "Kapak Resmi" olsun
-                            equipment.setImagePath(fileName);
+                            equipment.setImagePath(imageUrl);
                         } else {
                             // Diğer resimler "Ek Resimler" listesine
-                            equipment.getAdditionalImages().add(fileName);
+                            equipment.getAdditionalImages().add(imageUrl);
                         }
-                    } catch (IOException ioe) {
-                        throw new IOException("Resim kaydedilemedi: " + fileName, ioe);
+                    } catch (IOException e) {
+                        // Hata durumunda log bas ve işlemi durdurma (veya kullanıcıya hata dönülebilir)
+                        System.err.println("Cloudinary yükleme hatası: " + e.getMessage());
                     }
                 }
             }
@@ -94,8 +90,6 @@ public class EquipmentController {
 
         // Veritabanına kaydet
         repository.save(equipment);
-
-        // Ana sayfaya yönlendir
         return "redirect:/";
     }
 
