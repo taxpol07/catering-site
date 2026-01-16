@@ -9,57 +9,62 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<nav class="navbar glass-nav shadow-sm">
+<nav class="navbar glass-nav shadow-sm sticky-top">
     <div class="container">
-        <a th:href="@{/}" class="text-white text-decoration-none">
-            <i class="bi bi-arrow-left me-1"></i> Back
+        <a th:href="@{/}" class="text-white text-decoration-none d-flex align-items-center">
+            <i class="bi bi-arrow-left me-2"></i> Back
         </a>
         <span class="text-white fw-bold">Product Details</span>
-        <div style="width: 50px;"></div>
-    </div>
+        <div style="width: 50px;"></div> </div>
 </nav>
 
-<div class="container">
+<div class="container my-4">
 
     <div class="bg-white rounded shadow-sm overflow-hidden">
-
         <div class="row g-0">
-            <div class="main-image mb-3">
-                <img th:src="${equipment.imagePath == null} ? '/images/default-product.png' :
-                            (${#strings.startsWith(equipment.imagePath, 'http')} ? ${equipment.imagePath} : @{'/uploads/' + ${equipment.imagePath}})"
-                     class="img-fluid rounded shadow w-100"
-                     alt="Product Detail Image">
+
+            <div class="col-12 col-md-6 bg-white d-flex align-items-center justify-content-center p-3 border-bottom border-md-0">
+                <div style="width: 100%; max-height: 500px; text-align: center;">
+                    <img th:src="${equipment.imagePath == null} ? '/images/default-product.png' :
+                                (${#strings.startsWith(equipment.imagePath, 'http')} ? ${equipment.imagePath} : @{'/uploads/' + ${equipment.imagePath}})"
+                         class="img-fluid rounded"
+                         style="max-height: 450px; object-fit: contain; width: auto; max-width: 100%;"
+                         alt="Product Detail Image">
+                </div>
             </div>
 
-            <div class="col-md-6 p-4">
-                <span class="badge bg-secondary mb-2" th:text="${equipment.category}">Category</span>
-                <h2 class="fw-bold mb-1" th:text="${equipment.brand}">Brand</h2>
+            <div class="col-12 col-md-6 p-4 d-flex flex-column justify-content-center">
+                <div class="mb-2">
+                    <span class="badge bg-secondary" th:text="${equipment.category}">Category</span>
+                </div>
+
+                <h2 class="fw-bold mb-1 text-dark" th:text="${equipment.brand}">Brand</h2>
                 <h5 class="text-muted mb-3" th:text="${equipment.model}">Model</h5>
 
                 <div class="display-6 fw-bold text-warning mb-4" th:text="'£' + ${equipment.price}">£0.00</div>
 
                 <div class="mb-4">
                     <h6 class="fw-bold text-dark border-bottom pb-2">Technical Specs</h6>
-                    <p class="text-secondary" style="white-space: pre-wrap;" th:text="${equipment.technicalSpecs != null ? equipment.technicalSpecs : '-'}">Specs...</p>
+                    <p class="text-secondary" style="white-space: pre-wrap; font-size: 0.95rem;"
+                       th:text="${equipment.technicalSpecs != null ? equipment.technicalSpecs : '-'}">Specs...</p>
                 </div>
 
                 <div class="mb-4">
-                    <h6 class="fw-bold text-dark border-bottom pb-2">Testing Status</h6>
-                    <span class="badge bg-success" th:if="${equipment.testingStatus == 'Tested'}">TESTED</span>
-                    <span class="badge bg-warning text-dark" th:if="${equipment.testingStatus != 'Tested'}">UNTESTED</span>
+                    <h6 class="fw-bold text-dark border-bottom pb-2">Status</h6>
+                    <span class="badge bg-success fs-6" th:if="${equipment.testingStatus == 'Tested'}">TESTED & WORKING</span>
+                    <span class="badge bg-warning text-dark fs-6" th:if="${equipment.testingStatus != 'Tested'}">UNTESTED / AS IS</span>
                 </div>
 
-                <a href="https://wa.me/447500275753" target="_blank" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow">
-                    <i class="bi bi-whatsapp me-2"></i> Order on WhatsApp
+                <a href="https://wa.me/447500275753" target="_blank" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow-sm hover-scale">
+                    <i class="bi bi-whatsapp me-2 fs-5"></i> Order on WhatsApp
                 </a>
             </div>
         </div>
-
     </div>
 
-    <div class="warehouse-box shadow-sm">
+    <div class="warehouse-box shadow-sm mt-4 p-4 bg-white rounded text-center">
         <h5 class="fw-bold text-dark mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> Warehouse Address</h5>
         <p class="mb-1 text-muted fs-5">Manchester, Oldham Warehouse</p>
         <p class="mb-3 text-dark fw-bold fs-4">Post Code: OL8 2JP</p>

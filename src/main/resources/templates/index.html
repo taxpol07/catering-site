@@ -30,9 +30,9 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container my-4">
 
-    <div class="category-grid">
+    <div class="category-grid mb-4">
         <a th:href="@{/}" class="category" th:classappend="${param.category == null} ? 'active'">All</a>
         <a th:href="@{/category/Oven}" class="category">Oven</a>
         <a th:href="@{/category/Fryer}" class="category">Fryer</a>
@@ -58,18 +58,19 @@
     <div class="item-grid">
         <div th:each="equipment : ${listEquipments}" style="position: relative;">
 
-            <a th:href="@{/details/{id}(id=${equipment.id})}" class="item-card">
-                <div class="img-wrapper">
+            <a th:href="@{/details/{id}(id=${equipment.id})}" class="item-card text-decoration-none text-dark">
+                <div class="img-wrapper bg-white d-flex align-items-center justify-content-center" style="height: 200px; overflow: hidden;">
                     <img th:src="${equipment.imagePath == null} ? '/images/default-product.png' :
                                 (${#strings.startsWith(equipment.imagePath, 'http')} ? ${equipment.imagePath} : @{'/uploads/' + ${equipment.imagePath}})"
                          class="card-img-top"
-                         style="height: 200px; object-fit: cover;"
+                         style="max-height: 100%; max-width: 100%; object-fit: contain;"
                          alt="Product Image">
                 </div>
-                <div class="card-info">
-                    <div class="brand" th:text="${equipment.brand}">Brand</div>
-                    <div class="model" th:text="${equipment.model}">Model</div>
-                    <div class="price" th:text="'£' + ${equipment.price}">£0</div>
+
+                <div class="card-info p-2">
+                    <div class="brand fw-bold" th:text="${equipment.brand}">Brand</div>
+                    <div class="model text-muted small" th:text="${equipment.model}">Model</div>
+                    <div class="price text-warning fw-bold mt-1" th:text="'£' + ${equipment.price}">£0</div>
                 </div>
             </a>
 
