@@ -1,52 +1,153 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Polat Catering</title>
+    <title>PolatCatering UK</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<header class="header">
-    <div class="logo">Polat Catering</div>
-    <a href="/showNewEquipmentForm" class="add-btn">+ Ürün Ekle</a>
-</header>
+<div class="overlay">
 
-<div class="category-scroll">
-    <a href="/" class="cat-pill">Tümü</a>
-    <a th:href="@{/category/Fırın}" class="cat-pill">Fırınlar</a>
-    <a th:href="@{/category/Soğutucu}" class="cat-pill">Soğutucular</a>
-    <a th:href="@{/category/Tezgah}" class="cat-pill">Tezgahlar</a>
-    <a th:href="@{/category/Bulaşık}" class="cat-pill">Bulaşık</a>
-</div>
+    <nav class="navbar navbar-dark glass-nav mb-4 shadow-sm py-3">
+        <div class="container">
+            <a th:href="@{/}" class="navbar-brand fw-bold fs-4 text-warning">
+                <i class="bi bi-box-seam-fill me-2"></i> PolatCatering UK
+            </a>
 
-<div class="container">
-    <div th:if="${listEquipments.empty}" style="text-align:center; padding:20px; color:#666;">
-        <p>Henüz ürün eklenmemiş.</p>
-    </div>
-
-    <div class="product-grid">
-        <div th:each="equipment : ${listEquipments}" class="card">
-            <div class="card-img-container">
-                <img th:src="${equipment.imagePath != null ? equipment.imagePath : 'https://via.placeholder.com/150'}" alt="Ürün Resmi">
-            </div>
-
-            <div class="card-body">
-                <h3 th:text="${equipment.brand} + ' ' + ${equipment.model}">Ürün Adı</h3>
-
-                <p class="price" th:text="${equipment.price} + ' ₺'">0 ₺</p>
-
-                <div class="actions">
-                    <a th:href="@{/details/{id}(id=${equipment.id})}" class="btn-detail">İncele</a>
-                    <a th:href="@{/delete/{id}(id=${equipment.id})}" class="btn-delete">Sil</a>
+            <div class="d-flex gap-2">
+                <div th:if="${#request.userPrincipal == null}">
+                    <a th:href="@{/login}" class="btn btn-outline-light btn-sm fw-bold">
+                        <i class="bi bi-person-fill me-1"></i> Admin Login
+                    </a>
+                </div>
+                <div th:if="${#request.userPrincipal != null}">
+                    <a th:href="@{/logout}" class="btn btn-danger btn-sm fw-bold">
+                        <i class="bi bi-box-arrow-right me-1"></i> Logout
+                    </a>
                 </div>
             </div>
         </div>
+    </nav>
+
+    <div class="container text-center mb-5 mt-3">
+        <h1 class="display-4 fw-bold text-white" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.8);">
+            PolatCatering UK
+        </h1>
+        <p class="fs-5 text-white opacity-75" style="text-shadow: 1px 1px 5px rgba(0,0,0,0.8);">
+            Premium Industrial Catering Equipment Supplier
+        </p>
     </div>
+
+    <div class="container glass-card p-3 p-md-5 mb-5">
+
+        <section class="categories mb-5">
+            <h3 class="text-center fw-bold mb-4 text-white border-bottom border-light pb-3">Browse by Category</h3>
+
+            <div class="category-grid">
+                <a th:href="@{/}" class="category" th:classappend="${param.category == null} ? 'active'">All</a>
+
+                <a th:href="@{/category/Oven}" class="category">Oven</a>
+                <a th:href="@{/category/Fryer}" class="category">Fryer</a>
+                <a th:href="@{/category/Cooker}" class="category">Cooker</a>
+                <a th:href="@{/category/Grill}" class="category">Grill</a>
+                <a th:href="@{/category/Griddle}" class="category">Griddle</a>
+                <a th:href="@{/category/Peeler}" class="category">Peeler</a>
+                <a th:href="@{/category/Chipper}" class="category">Chipper</a>
+
+                <a th:href="@{/category/Dough Roller}" class="category">Dough Roller</a>
+                <a th:href="@{/category/Dough Mixer}" class="category">Dough Mixer</a>
+                <a th:href="@{/category/Fridge}" class="category">Fridge</a>
+                <a th:href="@{/category/Freezer}" class="category">Freezer</a>
+                <a th:href="@{/category/Sink}" class="category">Sink</a>
+                <a th:href="@{/category/Table}" class="category">Table</a>
+                <a th:href="@{/category/Stand}" class="category">Stand</a>
+                <a th:href="@{/category/Combi Ovens}" class="category">Combi Ovens</a>
+            </div>
+        </section>
+
+        <section class="items">
+            <div class="item-grid">
+
+                <div th:each="equipment : ${listEquipments}" style="position: relative;">
+
+                    <a th:href="@{/details/{id}(id=${equipment.id})}" class="item-card shadow-sm h-100 d-block text-decoration-none text-dark bg-white">
+
+                        <div class="img-wrapper">
+                            <img th:if="${equipment.imagePath != null}" th:src="${equipment.imagePath}" alt="Product Image">
+                            <img th:if="${equipment.imagePath == null}" th:src="@{https://via.placeholder.com/300?text=No+Image}" alt="No Image">
+                        </div>
+
+                        <h5 th:text="${equipment.brand}" class="mt-3 px-3 text-truncate fw-bold text-dark">Brand</h5>
+                        <p class="model px-3 text-muted small mb-1" th:text="${equipment.model}">Model</p>
+                        <span class="badge bg-secondary ms-3 mb-3" th:text="${equipment.category}">Category</span>
+
+                        <div class="price-tag shadow" th:text="'£' + ${equipment.price}">£0.00</div>
+                    </a>
+
+                    <div th:if="${#request.userPrincipal != null}"
+                         style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 20;">
+
+                        <a th:href="@{/edit/{id}(id=${equipment.id})}"
+                           class="btn btn-warning btn-sm rounded-circle d-flex align-items-center justify-content-center shadow text-white"
+                           style="width: 32px; height: 32px;">
+                            <i class="bi bi-pencil-fill" style="font-size: 0.8rem;"></i>
+                        </a>
+
+                        <a th:href="@{/delete/{id}(id=${equipment.id})}"
+                           onclick="return confirm('Are you sure you want to delete this item?');"
+                           class="btn btn-danger btn-sm rounded-circle d-flex align-items-center justify-content-center shadow"
+                           style="width: 32px; height: 32px;">
+                            <i class="bi bi-trash-fill" style="font-size: 0.8rem;"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+                <div th:if="${#lists.isEmpty(listEquipments)}" class="col-12 text-center py-5 text-white">
+                    <div class="p-4 bg-dark bg-opacity-25 rounded-3 border border-light border-opacity-25">
+                        <p class="mb-0 fs-5">No equipment found yet.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer-modern text-center mt-auto py-5 glass-footer">
+        <div class="container">
+            <h3 class="fw-bold mb-3 text-warning">PolatCatering UK</h3>
+
+            <div class="d-flex justify-content-center flex-wrap gap-4 mt-4">
+                <div class="bg-dark bg-opacity-75 p-3 rounded border border-secondary text-white" style="max-width: 350px;">
+                    <i class="bi bi-geo-alt-fill text-danger fs-3 mb-2 d-block"></i>
+                    <h5 class="fw-bold">Visit Our Warehouse</h5>
+                    <p class="mb-0 small opacity-75">Manchester, Oldham Warehouse<br>Come and see our products here</p>
+                    <p class="mt-2 fw-bold text-warning border-top border-secondary pt-2 d-inline-block">Post Code: OL8 2JP</p>
+                </div>
+                <div class="bg-dark bg-opacity-75 p-3 rounded border border-secondary text-white" style="max-width: 350px;">
+                    <i class="bi bi-whatsapp text-success fs-3 mb-2 d-block"></i>
+                    <h5 class="fw-bold">Contact Us</h5>
+                    <p class="mb-0 small opacity-75">Available on WhatsApp & Phone<br>Mon - Sun: 09:00 - 18:00</p>
+                    <p class="mt-2 fw-bold text-success border-top border-secondary pt-2 d-inline-block">+44 7500 275 753</p>
+                </div>
+            </div>
+
+            <p class="mt-5 mb-0 text-white-50 small">© 2026 PolatCatering UK. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <a th:href="@{/showNewEquipmentForm}" class="fab shadow-lg">
+        <i class="bi bi-plus-lg"></i>
+    </a>
+
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
