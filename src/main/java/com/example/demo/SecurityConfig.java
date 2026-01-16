@@ -18,14 +18,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
-                        // *** AŞAĞIDAKİ SATIRI EKLEYİN ***
+                        // Statik dosyalara ve ana sayfa yollarina izin ver
+                        .requestMatchers("/", "/home", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                        // YUKLEDIGIN RESIMLERIN GORUNMESI ICIN GEREKLI IZIN:
                         .requestMatchers("/uploads/**").permitAll()
-                        // **********************************
+                        // Diger tum sayfalar sifreli olsun
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/login")
+                        // Ozel login sayfasi olmadigi icin burayi varsayilana biraktik,
+                        // boylece hata vermeden acilacak.
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll());
@@ -33,7 +35,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // YÖNETİCİ ŞİFRESİ (Burası değişmedi)
+    // YONETICI SIFRESI (Ayni kaldi)
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.withDefaultPasswordEncoder()
