@@ -1,96 +1,84 @@
-/* FONT VE GENEL AYARLAR */
+/* GENEL AYARLAR */
 body {
     font-family: 'Poppins', sans-serif;
-    /* Hafif gri arkaplan - Ürünleri öne çıkarır */
-    background-color: #f5f5f5;
-    min-height: 100vh;
+    background-color: #f4f4f4; /* Hafif gri, göz yormaz */
+    padding-bottom: 60px;
 }
 
-/* OVERLAY İPTAL (Daha temiz görüntü için arkaplan resmini kaldırdık, düz renk yaptık) */
-/* Eğer illa resim kalsın dersen body background'ı eski haline getirebilirsin */
+a { text-decoration: none; color: inherit; }
 
-/* GLASS NAV (Üst Menü) */
+/* NAVBAR (Üst Menü) */
 .glass-nav {
-    background: #343a40; /* Koyu profesyonel renk */
+    background: #212529; /* Koyu profesyonel renk */
     color: white;
-    margin-bottom: 20px;
+    padding: 10px 0;
+    margin-bottom: 15px;
 }
 
-.glass-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05); /* Çok hafif gölge */
-    border: none;
-}
-
-.glass-footer {
-    background: #212529;
-    color: white;
-    margin-top: 30px;
-}
-
-/* KATEGORİLER (SENİN İSTEDİĞİN GİBİ KALDI - DOKUNMADIM) */
+/* KATEGORİLER (Senin İstediğin Gibi Kaldı) */
 .category-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
+    margin-bottom: 20px;
 }
 
 .category {
-    background: #fff;
+    background: white;
     color: #333;
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
     font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid #dee2e6;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    white-space: nowrap;
 }
 
-.category.active, .category:hover {
-    background: #ffc107;
-    color: #000;
+.category:hover, .category.active {
+    background: #ffc107; /* Sarı */
+    color: black;
     border-color: #ffc107;
 }
 
-/* --- TRENDYOL TARZI ÜRÜN LİSTESİ (ÖNEMLİ KISIM) --- */
+/* --- MOBİL İÇİN 2x2 IZGARA SİSTEMİ (TRENDYOL TARZI) --- */
 .item-grid {
     display: grid;
-    /* MOBİL: 2 Sütun (Sıkı Yerleşim) */
+    /* Mobilde yan yana 2 tane (1fr 1fr) */
     grid-template-columns: 1fr 1fr;
-    gap: 10px; /* Boşluklar azaldı (Fit görünüm) */
-    padding: 5px;
+    gap: 8px; /* Aradaki boşlukları azalttım (Fit görünüm) */
+    padding: 0 5px;
 }
 
+/* Masaüstünde 4 tane olsun */
 @media (min-width: 768px) {
     .item-grid {
-        grid-template-columns: repeat(4, 1fr); /* Masaüstü: 4 Sütun */
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
     }
 }
 
+/* ÜRÜN KARTI (Card) */
 .item-card {
     background: white;
-    border-radius: 8px;
+    border-radius: 6px;
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
     border: 1px solid #eee;
     display: flex;
     flex-direction: column;
     height: 100%;
-    position: relative;
 }
 
 .img-wrapper {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Kare resim alanı (Trendyol standardı) */
+    /* Kare resim alanı (1:1) */
+    aspect-ratio: 1 / 1;
     background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 5px;
+    border-bottom: 1px solid #f9f9f9;
 }
 
 .img-wrapper img {
@@ -99,70 +87,62 @@ body {
     object-fit: contain;
 }
 
-/* Ürün Bilgileri (Daha kompakt) */
+/* Kart Bilgileri */
 .card-info {
-    padding: 10px;
+    padding: 8px;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
 }
 
-.brand-text {
+.brand {
     font-size: 0.85rem;
     font-weight: 700;
     color: #333;
     margin-bottom: 2px;
 }
 
-.model-text {
+.model {
     font-size: 0.75rem;
-    color: #666;
-    margin-bottom: 5px;
+    color: #777;
+    margin-bottom: 6px;
     /* Uzun yazıları kes */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.price-text {
-    font-size: 1rem;
+.price {
+    font-size: 0.95rem;
     font-weight: bold;
     color: #f27a1a; /* Trendyol Turuncusu */
-    margin-top: auto; /* Fiyatı en alta it */
+    margin-top: auto;
 }
 
-/* FAB BUTTON */
+/* ADD BUTTON (FAB) */
 .fab {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     background: #28a745;
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    text-decoration: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    z-index: 1000;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 100;
 }
 
-/* DETAY SAYFASI ÖZEL */
-.details-wrapper {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
+/* DETAILS SAYFASI ÖZEL */
 .warehouse-box {
-    background: #f8f9fa;
-    border-top: 1px solid #eee;
+    background: #e9ecef;
     padding: 20px;
-    margin-top: 20px;
     text-align: center;
-    border-radius: 0 0 8px 8px;
+    border-radius: 8px;
+    margin-top: 30px;
+    border: 1px solid #dee2e6;
 }
