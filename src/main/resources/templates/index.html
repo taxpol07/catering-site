@@ -31,11 +31,12 @@
     <div class="product-grid">
         <div th:each="equipment : ${listEquipments}" class="card">
             <div class="card-img-container">
-                <img th:src="${equipment.imagePath}" alt="Ürün Resmi" onerror="this.src='https://via.placeholder.com/150'">
+                <img th:src="${equipment.imagePath != null ? equipment.imagePath : 'https://via.placeholder.com/150'}" alt="Ürün Resmi">
             </div>
 
             <div class="card-body">
-                <h3 th:text="${equipment.name}">Ürün Adı</h3>
+                <h3 th:text="${equipment.brand} + ' ' + ${equipment.model}">Ürün Adı</h3>
+
                 <p class="price" th:text="${equipment.price} + ' ₺'">0 ₺</p>
 
                 <div class="actions">
