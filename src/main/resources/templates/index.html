@@ -24,14 +24,14 @@
 </div>
 
 <div class="container">
-    <div th:if="${listEquipments.empty}" style="text-align:center; padding:20px;">
+    <div th:if="${listEquipments.empty}" style="text-align:center; padding:20px; color:#666;">
         <p>Henüz ürün eklenmemiş.</p>
     </div>
 
     <div class="product-grid">
         <div th:each="equipment : ${listEquipments}" class="card">
             <div class="card-img-container">
-                <img th:src="${equipment.imagePath}" alt="Ürün Resmi">
+                <img th:src="${equipment.imagePath}" alt="Ürün Resmi" onerror="this.src='https://via.placeholder.com/150'">
             </div>
 
             <div class="card-body">

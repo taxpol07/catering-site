@@ -17,22 +17,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // Form güvenliğini basitleştirir
                 .authorizeHttpRequests(auth -> auth
-                        // 1. BU DOSYALAR HERKESE AÇIK OLSUN (Login Yok)
-                        // css, js, images klasörleri ve ana sayfa
+                        // BU ADRESLER HERKESE AÇIK (Şifre İstemez)
                         .requestMatchers(
                                 "/",
                                 "/index",
-                                "/css/**",
+                                "/css/**",      // Tasarım dosyaları
                                 "/js/**",
                                 "/images/**",
-                                "/webjars/**",
-                                "/details/**",
-                                "/category/**"
+                                "/details/**",  // Ürün detay sayfası
+                                "/category/**", // Kategori sayfaları
+                                "/uploads/**"   // Yüklenen resimler
                         ).permitAll()
 
-                        // 2. GERİ KALAN HER ŞEY (Ekleme, Silme) ŞİFRE İSTER
+                        // GERİ KALAN HER ŞEY (Ekleme, Silme, Düzenleme) ŞİFRE İSTER
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -47,7 +46,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // YÖNETİCİ ŞİFRESİ
+    // YÖNETİCİ ŞİFRESİ (Burası değişmedi)
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.withDefaultPasswordEncoder()
