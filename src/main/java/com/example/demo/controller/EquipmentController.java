@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -30,8 +27,8 @@ public class EquipmentController {
             listEquipments = repository.findAll();
         }
         model.addAttribute("listEquipments", listEquipments);
-        model.addAttribute("param", category); // Kategori seçili kalsın diye
-        return "index"; // index.html'e git
+        model.addAttribute("param", category);
+        return "index";
     }
 
     // KATEGORİ FİLTRESİ
@@ -48,17 +45,30 @@ public class EquipmentController {
         return "new_equipment";
     }
 
-    // ÜRÜN KAYDETME
+    // *** DÜZELTİLEN KISIM: ÜRÜN KAYDETME ***
     @PostMapping("/saveEquipment")
     public String saveEquipment(@ModelAttribute("equipment") Equipment equipment,
-                                @RequestParam("image") MultipartFile multipartFile) throws IOException {
+                                @RequestParam("imageFiles") List<MultipartFile> imageFiles) throws IOException {
 
-        // Eğer yeni bir resim seçildiyse Cloudinary'ye yükle (yoksa eskisi kalır)
-        if (!multipartFile.isEmpty()) {
-            // Burada Cloudinary servisi çağrılmalı. Şimdilik basit tutuyorum.
-            // Gerçek projede CloudinaryService.upload(multipartFile) kullanıyoruz.
+        // Çoklu resim yönetimi için hazırlık:
+        // HTML formundaki name="imageFiles" ile buradaki @RequestParam("imageFiles") eşleşmeli.
+
+        for (MultipartFile file : imageFiles) {
+            if (!file.isEmpty()) {
+                // TODO: Buraya Cloudinary yükleme kodunuz gelecek.
+                // Örnek mantık:
+                // String imageUrl = cloudinaryService.upload(file);
+
+                // Eğer ana resim boşsa ilk resmi ana resim yap:
+                // if (equipment.getImagePath() == null) {
+                //     equipment.setImagePath(imageUrl);
+                // } else {
+                //     equipment.getAdditionalImages().add(imageUrl);
+                // }
+            }
         }
 
+        // Şimdilik sadece veritabanına kaydediyoruz (Resim yükleme servisini eklediğinizde yukarıyı açarsınız)
         repository.save(equipment);
         return "redirect:/";
     }
@@ -79,16 +89,13 @@ public class EquipmentController {
         return "redirect:/";
     }
 
-    // *** İŞTE DÜZELTİLEN KISIM: DETAY SAYFASI ***
+    // DETAY SAYFASI
     @GetMapping("/details/{id}")
     public String showDetails(@PathVariable(value = "id") long id, Model model) {
-        // Ürünü bul, bulamazsan hata ver
         Equipment equipment = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid equipment Id:" + id));
 
-        // "equipment" adıyla sayfaya gönder
         model.addAttribute("equipment", equipment);
-
-        return "details"; // details.html dosyasını aç!
+        return "details";
     }
 }
