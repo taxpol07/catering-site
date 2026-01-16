@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Equipment Details</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <nav class="navbar navbar-dark glass-nav mb-5 shadow-sm">
+        <div class="container">
+            <a th:href="@{/}" class="navbar-brand fw-bold">
+                <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+            </a>
+            <span class="navbar-text text-warning fw-bold">PolatCatering UK</span>
+        </div>
+    </nav>
+
+    <div class="container glass-card p-5 mb-5">
+        <div class="row g-5">
+
+            <div class="col-lg-7 col-md-12">
+
+                <div th:if="${equipment.imagePath == null}" class="text-center p-5 bg-white rounded border opacity-75" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                    <p class="text-muted fs-4">No Image Available</p>
+                </div>
+
+                <div th:if="${equipment.imagePath != null}" id="productCarousel" class="carousel slide bg-white rounded-3 border shadow-sm" data-bs-ride="carousel">
+
+                    <div class="carousel-inner">
+
+                        <div th:if="${equipment.additionalImages != null and not #lists.isEmpty(equipment.additionalImages)}"
+                             th:each="imgName, stat : ${equipment.additionalImages}"
+                             th:classappend="${stat.index == 0} ? 'active'"
+                             class="carousel-item text-center">
+
+                            <img th:src="${#strings.startsWith(imgName, 'http')} ? ${imgName} : @{/image/{fn}(fn=${imgName})}"
+                                 class="img-fluid"
+                                 style="max-height: 500px; width: auto; object-fit: contain;" alt="Product Image">
+                        </div>
+
+                        <div th:if="${equipment.additionalImages == null or #lists.isEmpty(equipment.additionalImages)}"
+                             class="carousel-item active text-center">
+
+                            <img th:src="${#strings.startsWith(equipment.imagePath, 'http')} ? ${equipment.imagePath} : @{/image/{fn}(fn=${equipment.imagePath})}"
+                                 class="img-fluid"
+                                 style="max-height: 500px; width: auto; object-fit: contain;" alt="Main Image">
+                        </div>
+
+                    </div>
+
+                    <button th:if="${equipment.additionalImages != null and #lists.size(equipment.additionalImages) > 1}"
+                            class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark bg-opacity-25 rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button th:if="${equipment.additionalImages != null and #lists.size(equipment.additionalImages) > 1}"
+                            class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark bg-opacity-25 rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <div class="d-flex gap-2 mt-3 overflow-auto" th:if="${equipment.additionalImages != null}">
+                    <div th:each="imgName : ${equipment.additionalImages}">
+                        <img th:src="${#strings.startsWith(imgName, 'http')} ? ${imgName} : @{/image/{fn}(fn=${imgName})}"
+                             style="width: 70px; height: 70px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
+                             class="opacity-75 hover-opacity-100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 col-md-12">
+
+                <div class="mb-3">
+                    <span class="badge bg-warning text-dark fs-6 mb-2 shadow-sm" th:text="${equipment.category}">Category</span>
+                    <span class="badge bg-success fs-6 mb-2 ms-2 shadow-sm" th:if="${equipment.testingStatus == 'Tested'}">
+                        <i class="bi bi-check-circle-fill"></i> Tested & Working
+                     </span>
+                    <span class="badge bg-secondary fs-6 mb-2 ms-2 shadow-sm" th:if="${equipment.testingStatus == 'Untested'}">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Untested
+                     </span>
+                </div>
+
+                <h1 class="fw-bold mb-1" th:text="${equipment.brand}">Brand Name</h1>
+                <h4 class="text-muted mb-4" th:text="${equipment.model}">Model Number</h4>
+
+                <h2 class="text-primary fw-bold mb-4 display-5" th:text="'£' + ${equipment.price}">£0.00</h2>
+
+                <div class="p-4 bg-white bg-opacity-50 rounded-3 border mb-4 shadow-sm">
+                    <h5 class="fw-bold border-bottom border-secondary pb-2">
+                        <i class="bi bi-gear-fill me-2"></i>Technical Specifications
+                    </h5>
+                    <p class="mt-3" style="white-space: pre-wrap; font-size: 0.95rem;" th:text="${equipment.technicalSpecs}">
+                        No specifications provided.
+                    </p>
+                </div>
+
+                <div class="d-grid gap-3">
+                    <a href="https://wa.me/447500275753" target="_blank" class="btn btn-success btn-lg fw-bold py-3 shadow-lg hover-scale">
+                        <i class="bi bi-whatsapp me-2"></i> WhatsApp: +44 7500 275 753
+                    </a>
+
+                    <a th:href="@{/edit/{id}(id=${equipment.id})}" class="btn btn-outline-dark fw-bold border-2">
+                        <i class="bi bi-pencil-square me-2"></i> Edit This Item
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-modern text-center">
+        <div class="container">
+            <h3 class="fw-bold mb-3 text-warning">PolatCatering UK</h3>
+
+            <div class="d-flex justify-content-center flex-wrap gap-4 mt-4">
+
+                <div class="bg-dark bg-opacity-50 p-3 rounded border border-secondary" style="max-width: 400px;">
+                    <i class="bi bi-geo-alt-fill text-danger fs-3 mb-2 d-block"></i>
+                    <h5 class="fw-bold text-white">Visit Our Warehouse</h5>
+                    <p class="mb-0 text-light opacity-75">
+                        Manchester, Oldham Warehouse<br>
+                        Come and see our products here
+                    </p>
+                    <p class="mt-2 fw-bold text-warning border-top border-secondary pt-2 d-inline-block">
+                        Post Code: OL8 2JP
+                    </p>
+                </div>
+
+                <div class="bg-dark bg-opacity-50 p-3 rounded border border-secondary" style="max-width: 300px;">
+                    <i class="bi bi-telephone-fill text-success fs-3 mb-2 d-block"></i>
+                    <h5 class="fw-bold text-white">Contact Us</h5>
+                    <p class="mb-0 text-light opacity-75">
+                        Available on WhatsApp & Phone<br>
+                        Mon - Sun: 09:00 - 18:00
+                    </p>
+                    <p class="mt-2 fw-bold text-success border-top border-secondary pt-2 d-inline-block">
+                        +44 7500 275 753
+                    </p>
+                </div>
+
+            </div>
+
+            <p class="mt-4 mb-0 text-muted small">© 2026 PolatCatering UK. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

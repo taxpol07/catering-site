@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Equipment</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="bg-dark py-5">
+
+<div class="container bg-white p-5 rounded-4 shadow-lg col-lg-7">
+
+    <h2 class="fw-bold mb-4 text-center" th:text="${equipment.id} ? '✏️ Edit Equipment' : '➕ Add New Equipment'"></h2>
+
+    <form th:action="@{/saveEquipment}" th:object="${equipment}" method="POST" enctype="multipart/form-data">
+
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{imagePath}">
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <label class="fw-bold">Category</label>
+                <select th:field="*{category}" class="form-select category-select">
+                    <option value="Oven">Oven</option>
+                    <option value="Fryer">Fryer</option>
+                    <option value="Cooker">Cooker</option>
+                    <option value="Grill">Grill</option>
+                    <option value="Griddle">Griddle</option>
+                    <option value="Peeler">Peeler</option>
+                    <option value="Chipper">Chipper</option>
+                    <option value="Dough Roller">Dough Roller</option>
+                    <option value="Dough Mixer">Dough Mixer</option>
+                    <option value="Fridge">Fridge</option>
+                    <option value="Freezer">Freezer</option>
+                    <option value="Sink">Sink</option>
+                    <option value="Table">Table</option>
+                    <option value="Stand">Stand</option>
+                    <option value="Combi Ovens">Combi Ovens</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold">Testing Status</label>
+                <select th:field="*{testingStatus}" class="form-select status-select">
+                    <option value="Tested">✅ Tested</option>
+                    <option value="Untested">⚠️ Untested</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold">Brand</label>
+                <input type="text" th:field="*{brand}" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="fw-bold">Model</label>
+                <input type="text" th:field="*{model}" class="form-control">
+            </div>
+
+            <div class="col-12">
+                <label class="fw-bold">Price (£)</label>
+                <input type="number" step="0.01" th:field="*{price}" class="form-control" required>
+            </div>
+
+            <div class="col-12">
+                <label class="fw-bold">Technical Specs</label>
+                <textarea th:field="*{technicalSpecs}" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="col-12">
+                <label class="fw-bold">Images</label>
+                <input type="file" name="imageFiles" multiple class="form-control">
+                <small class="text-muted" th:if="${equipment.id}">Leave empty to keep existing images.</small>
+            </div>
+
+        </div>
+
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="btn btn-warning w-75 fw-bold py-3">
+                💾 Save Equipment
+            </button>
+
+            <a href="/" class="btn btn-outline-dark w-25 py-3">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>
