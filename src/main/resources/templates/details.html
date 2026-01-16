@@ -27,7 +27,8 @@
 
         <div class="row g-0">
             <div class="main-image mb-3">
-                <img th:src="${equipment.imagePath != null} ? @{'/uploads/' + ${equipment.imagePath}} : '/images/default-product.png'"
+                <img th:src="${equipment.imagePath == null} ? '/images/default-product.png' :
+                            (${#strings.startsWith(equipment.imagePath, 'http')} ? ${equipment.imagePath} : @{'/uploads/' + ${equipment.imagePath}})"
                      class="img-fluid rounded shadow w-100"
                      alt="Product Detail Image">
             </div>

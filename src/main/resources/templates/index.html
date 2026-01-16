@@ -60,7 +60,8 @@
 
             <a th:href="@{/details/{id}(id=${equipment.id})}" class="item-card">
                 <div class="img-wrapper">
-                    <img th:src="${equipment.imagePath != null} ? @{'/uploads/' + ${equipment.imagePath}} : '/images/default-product.png'"
+                    <img th:src="${equipment.imagePath == null} ? '/images/default-product.png' :
+                                (${#strings.startsWith(equipment.imagePath, 'http')} ? ${equipment.imagePath} : @{'/uploads/' + ${equipment.imagePath}})"
                          class="card-img-top"
                          style="height: 200px; object-fit: cover;"
                          alt="Product Image">
